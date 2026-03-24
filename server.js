@@ -1,27 +1,33 @@
 import express from "express";
-import cors from "cors";
+import cors from "cors"; // 1. Use ONLY this import
 import dotenv from "dotenv";
 import fs from "fs";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 dotenv.config();
-const cors = require('cors');
+
 const app = express();
-app.use(cors());
+
+app.use(cors()); 
 app.use(express.json());
 
 
-// 1. Read the entire Knowledge Base as a String
-const rawData = fs.readFileSync("./KnowledgeBase.json", "utf-8");
-const knowledgeBaseText = JSON.parse(rawData).knowledge
-    .map(item => `Topic: ${item.topic}\nContent: ${item.content}`)
-    .join("\n\n");
+let knowledgeBaseText = "";
+try {
+    const rawData = fs.readFileSync("./KnowledgeBase.json", "utf-8");
+    const parsedData = JSON.parse(rawData);
+    knowledgeBaseText = parsedData.knowledge
+        .map(item => `Topic: ${item.topic}\nContent: ${item.content}`)
+        .join("\n\n");
+} catch (err) {
+    console.error("❌ Error reading KnowledgeBase.json:", err.message);
+}
 
-// 2. Initialize the model with the WHOLE Knowledge Base in the System Instruction
+// 4. Initialize Gemini
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 const model = genAI.getGenerativeModel({ 
-    model: "gemini-2.5-flash",
+    model: "gemini-1.5-flash", // Use 1.5-flash as it's the most stable current version
     systemInstruction: `
         You are the official SICM AI Assistant for Santa Isabel College of Manila.
         
@@ -36,13 +42,14 @@ const model = genAI.getGenerativeModel({
     `
 });
 
-// 3. Simplified Chat Route (No more manual searching!)
+// 5. Chat Route
 app.post("/chat", async (req, res) => {
     try {
         const { message } = req.body;
         console.log("📩 Message from Isabelan:", message);
 
-        // We just send the message. The AI already "knows" the whole JSON.
+        if (!message) return res.status(400).json({ error: "No message provided" });
+
         const result = await model.generateContent(message);
         const response = await result.response;
         
@@ -54,5 +61,6 @@ app.post("/chat", async (req, res) => {
     }
 });
 
+// 6. Start Server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`🚀 SICM Server running on port ${PORT}`));
