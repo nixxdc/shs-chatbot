@@ -1,10 +1,4 @@
-/**
- * SICM AI Assistant - Final Script
- * Match this with your Full-Screen HTML and CSS
- */
-
 async function sendMessage() {
-    // 1. Get Elements (Matched with your index.html IDs)
     const inputField = document.getElementById("userInput"); 
     const chatBox = document.getElementById("chatBox");
     const typingIndicator = document.getElementById("typing");
@@ -32,7 +26,7 @@ async function sendMessage() {
 
     try {
         // 4. Fetch from Node.js Backend
-        const res = await fetch("http://localhost:3000/chat", {
+        const res = await fetch("https://shs-chatbot-nixxdc.onrender.com/chat", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ message: message })
@@ -67,9 +61,6 @@ async function sendMessage() {
 
     scrollToBottom();
 }
-
-/** * HELPER FUNCTIONS 
- */
 
 function scrollToBottom() {
     const chatBox = document.getElementById("chatBox");
