@@ -5,10 +5,11 @@ import fs from "fs";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 dotenv.config();
-
+const cors = require('cors');
 const app = express();
 app.use(cors());
 app.use(express.json());
+
 
 // 1. Read the entire Knowledge Base as a String
 const rawData = fs.readFileSync("./KnowledgeBase.json", "utf-8");
