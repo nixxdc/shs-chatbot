@@ -1,0 +1,221 @@
+/* ================================
+   SIC Chatbot Fullscreen UI
+   Updated: March 24, 2026
+================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+  /* =========================================
+     NEW BACKGROUND LOGIC (Low Transparency)
+     ========================================= */
+  /* The linear-gradient creates a dark overlay. 
+     The '0.85' is the alpha channel.
+     0.85 means it is 85% opaque (making the picture 15% visible).
+     Change this number (0.0 to 1.0) to adjust the fade. */
+  background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)), 
+              url('../image/sicm-bg.JPG'); 
+              
+  background-size: cover;    /* Ensures picture covers whole screen */
+  background-position: center; /* Centers the gate */
+  background-attachment: fixed; /* Keeps it still while scrolling chat */
+}
+
+/* ------------------------------
+   Chat Container
+------------------------------- */
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: 90vh; /* Takes up 90% of screen height */
+  width: 95%;   /* Takes up 95% of screen width */
+  max-width: 1100px;
+  
+  /* Modern Semi-Transparent White (Peeks at background) */
+  background: rgba(255, 255, 255, 0.96); 
+  backdrop-filter: blur(8px); /* Optional: slight blur effect */
+  
+  border-radius: 20px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6); /* More dramatic shadow */
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* ------------------------------
+   Header
+------------------------------- */
+.header {
+  background: #4b0f1a; /* SICM Deep Maroon */
+  color: #d4af37;      /* SICM Gold */
+  padding: 25px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  border-bottom: 4px solid #d4af37;
+}
+
+.header .logo {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  border-radius: 50%;
+  background: white;
+  padding: 3px;
+}
+
+.header .title {
+  font-size: 24px;
+  font-weight: bold;
+  white-space: nowrap;
+  margin: 0;
+}
+/* ------------------------------
+   Chat Box
+------------------------------- */
+.chat-box {
+  flex: 1;
+  padding: 30px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  background: transparent; /* Must be transparent to see container */
+}
+
+/* ------------------------------
+   Message Bubbles
+------------------------------- */
+.message {
+  margin: 10px 0;
+  padding: 15px 20px;
+  border-radius: 20px;
+  max-width: 75%;
+  font-size: 15px;
+  line-height: 1.6;
+  word-wrap: break-word;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* User Message */
+.user {
+  background: #4b0f1a; 
+  color: #ffffff;
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+}
+
+/* Bot Message */
+.bot {
+  background: #f1f1f1;
+  color: #333;
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+/* Markdown List Formatting */
+.message-content ul {
+    margin: 10px 0;
+    padding-left: 25px;
+}
+
+.message-content li {
+    margin-bottom: 8px;
+}
+
+.message-content strong {
+    color: #4b0f1a;
+}
+
+/* ------------------------------
+   Typing Indicator
+------------------------------- */
+#typing {
+  font-size: 13px;
+  color: #666;
+  font-style: italic;
+  padding: 10px;
+  display: none;
+}
+
+#typing::after {
+  content: '...';
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* ------------------------------
+   Input Area
+------------------------------- */
+.input-area {
+  display: flex;
+  padding: 25px 35px;
+  background: white;
+  border-top: 1px solid #eee;
+  gap: 15px;
+}
+
+.input-area input {
+  flex: 1;
+  padding: 15px 25px;
+  font-size: 16px;
+  border-radius: 35px;
+  border: 2px solid #eee;
+  outline: none;
+  transition: 0.3s;
+}
+
+.input-area input:focus {
+  border-color: #4b0f1a;
+  box-shadow: 0 0 10px rgba(75, 15, 26, 0.1);
+}
+
+.input-area button {
+  background: #4b0f1a;
+  color: #d4af37;
+  border: none;
+  padding: 0 30px;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 35px;
+  transition: 0.3s;
+}
+
+.input-area button:hover {
+  background: #320a11;
+  transform: scale(1.05);
+}
+
+/* ------------------------------
+   Scrollbar
+------------------------------- */
+.chat-box::-webkit-scrollbar {
+  width: 8px;
+}
+
+.chat-box::-webkit-scrollbar-thumb {
+  background: rgba(75, 15, 26, 0.2);
+  border-radius: 10px;
+}
