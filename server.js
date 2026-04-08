@@ -35,7 +35,8 @@ const model = genAI.getGenerativeModel({
     `
 });
 
-app.post("/api/chat", async (req, res) => { // 3. Recommended: Change route to /api/chat
+app.post("/api/chat", async (req, res) => { 
+    console.log("API Key exists:", !!process.env.GEMINI_API_KEY);
     try {
         const { message } = req.body;
         if (!message) return res.status(400).json({ error: "No message provided" });
