@@ -1,68 +1,114 @@
-import dotenv from "dotenv";
-dotenv.config();
-import express from "express";
-import cors from "cors";
-import fs from "fs";
-import path from "path";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+async function sendMessage() {
+    const inputField = document.getElementById("userInput"); 
+    const chatBox = document.getElementById("chatBox");
+    const typingIndicator = document.getElementById("typing");
 
-const app = express();
+    // Safety check to ensure HTML elements exist
+    if (!inputField || !chatBox || !typingIndicator) return;
 
-// Middleware
-app.use(cors());
-app.use(express.json());
+    const message = inputField.value.trim();
+    if (!message) return;
 
-// 1. Load Knowledge Base
-let knowledgeBaseText = "";
-try {
-    const kbPath = path.join(process.cwd(), "KnowledgeBase.json");
-    const rawData = fs.readFileSync(kbPath, "utf-8");
-    const parsedData = JSON.parse(rawData);
-    knowledgeBaseText = parsedData.knowledge
-        .map(item => `Topic: ${item.topic}\nContent: ${item.content}`)
-        .join("\n\n");
-} catch (err) {
-    console.error("❌ Error reading KnowledgeBase.json:", err.message);
-}
+    // 1. Display User Message in the Chat Box
+    const userDiv = document.createElement("div");
+    userDiv.className = "message user";
+    userDiv.innerHTML = `<b>You:</b> ${escapeHTML(message)}`;
+    chatBox.insertBefore(userDiv, typingIndicator);
 
-// 2. Initialize Gemini
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ 
-    model: "gemini-1.5-flash", 
-    systemInstruction: `
-        You are the official SICM AI Assistant for Santa Isabel College of Manila.
-        
-        STRICT RULES:
-        1. Use ONLY the following Knowledge Base to answer questions.
-        2. If the answer isn't in the Knowledge Base, politely say you don't have that specific info and refer them to admissions@santaisabel.edu.ph.
-        3. Never suggest other schools or locations like Brazil or Argentina. You are in Ermita, Manila.
-        4. Be helpful, professional, and call the students 'Isabelans'.
+    // Clear input and scroll down
+    inputField.value = "";
+    scrollToBottom();
 
-        KNOWLEDGE BASE:
-        ${knowledgeBaseText}
-    `
-});
+    // 2. Show the "Typing..." Indicator
+    typingIndicator.style.display = "block";
+    scrollToBottom();
 
-// 3. Chat Route
-app.post("/api/chat", async (req, res) => {
     try {
-        const { message } = req.body;
-        if (!message) return res.status(400).json({ error: "No message provided" });
+        // 3. Send Message to the Backend (server.js via Vercel Route)
+        const res = await fetch("/api/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: message })
+        });
 
-        const result = await model.generateContent(message);
-        const response = await result.response;
+        const data = await res.json();
+
+        // Hide typing indicator now that we have a response
+        typingIndicator.style.display = "none";
+
+        // Handle Rate Limiting (Free Tier)
+        if (res.status === 429) {
+            throw new Error("The assistant is a bit busy. Please wait a minute, Isabelan!");
+        }
+
+        if (!res.ok) {
+            throw new Error(data.reply || data.error || "Something went wrong.");
+        }
+
+        // 4. Create Bot Message Bubble
+        const botDiv = document.createElement("div");
+        botDiv.className = "message bot"; 
         
-        res.json({ reply: response.text() });
+        // Parse Markdown (using 'marked' library if you linked it in index.html)
+        const htmlContent = typeof marked !== 'undefined' 
+            ? marked.parse(data.reply) 
+            : data.reply;
+        
+        botDiv.innerHTML = `<div class="message-content">${htmlContent}</div>`;
+        chatBox.insertBefore(botDiv, typingIndicator);
 
     } catch (error) {
-        console.error("DEBUG ERROR:", error.message);
-        // Handle Gemini Rate Limits (Free Tier)
-        if (error.message.includes("429")) {
-            return res.status(429).json({ error: "The assistant is busy. Please try again in a minute." });
-        }
-        res.status(500).json({ error: "Internal Server Error" });
+        typingIndicator.style.display = "none";
+        
+        // Display Error Message to User
+        const errorDiv = document.createElement("div");
+        errorDiv.className = "message bot error"; 
+        errorDiv.style.color = "#d9534f"; // Soft red
+        errorDiv.innerHTML = `<b>System:</b> ${error.message}`;
+        chatBox.insertBefore(errorDiv, typingIndicator);
+    }
+
+    scrollToBottom();
+}
+
+/**
+ * Helper to auto-scroll to the latest message
+ */
+function scrollToBottom() {
+    const chatBox = document.getElementById("chatBox");
+    if (chatBox) {
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+}
+
+/**
+ * Simple HTML Escaper for Security
+ */
+function escapeHTML(str) {
+    return str.replace(/[&<>"']/g, m => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[m]));
+}
+
+/**
+ * Event Listeners - Runs once the page loads
+ */
+document.addEventListener("DOMContentLoaded", () => {
+    const input = document.getElementById("userInput");
+    const button = document.getElementById("sendBtn");
+
+    // Allow "Enter" key to send message
+    if (input) {
+        input.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+    }
+
+    // Connect Click Event to the Button
+    if (button) {
+        button.addEventListener("click", sendMessage);
     }
 });
-
-// Export for Vercel
-export default app;
