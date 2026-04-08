@@ -253,59 +253,30 @@ body {
     }
 }
 
-/* Final Mobile Responsive Fix */
+/* --- Mobile Header Fix --- */
 @media (max-width: 600px) {
-    /* Make container full-screen */
-    .chat-container {
-        width: 100vw !important;
-        height: 100vh !important;
-        margin: 0 !important;
-        border-radius: 0 !important;
-        display: flex;
-        flex-direction: column;
-    }
-
-    /* Fix the Header text wrapping */
     .header {
-        padding: 10px;
+        padding: 10px 15px;
         display: flex;
-        align-items: center;
-        gap: 10px;
+        align-items: center; /* Keeps logo and text centered vertically */
+        gap: 12px;
+        width: 100%;
+        box-sizing: border-box; /* Prevents padding from pushing header off-screen */
     }
 
     .header h1 {
-        font-size: 0.95rem; /* Smaller font to fit long name */
+        font-size: 1rem; /* Smaller font for mobile */
         line-height: 1.2;
+        white-space: normal; /* CRITICAL: Allows the text to wrap to 2 lines */
+        overflow: visible;
         text-align: left;
         margin: 0;
-        white-space: normal; /* Allows the name to wrap to two lines */
+        flex: 1; /* Lets the text take up the remaining space next to the logo */
     }
 
     .header img {
-        width: 35px;
+        width: 35px; /* Smaller logo for mobile */
         height: auto;
-    }
-
-    /* Adjust Chat Box height */
-    .chat-box {
-        flex: 1; /* Automatically takes up available space */
-        padding: 10px;
-    }
-
-    /* Improve Input Area for thumbs */
-    .input-area {
-        padding: 12px;
-        gap: 8px;
-        background: #fff;
-    }
-
-    #userInput {
-        font-size: 16px; /* Prevents iPhone zoom-in glitch */
-        padding: 12px;
-    }
-
-    #sendBtn {
-        padding: 12px;
-        font-weight: bold;
+        flex-shrink: 0; /* Prevents logo from being squashed */
     }
 }
