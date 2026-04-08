@@ -49,7 +49,7 @@ app.post("/api/chat", async (req, res) => {
 
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
         // Using the model version that worked for you locally
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
         const systemPrompt = `
             You are the official SICM AI Assistant for Santa Isabel College of Manila (located in Ermita, Manila).
