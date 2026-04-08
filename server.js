@@ -47,8 +47,8 @@ app.post("/api/chat", async (req, res) => {
 // Inside your app.post in server.js
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
         const model = genAI.getGenerativeModel({ 
-            model: "gemini-1.5", // Changed to 1.5-pro for better compatibility
-        }, { apiVersion: 'v1' });
+            model: "gemini-1.5-latest",
+        },)
 
         // Build the system prompt dynamically
         const systemPrompt = `
