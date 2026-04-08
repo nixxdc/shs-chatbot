@@ -1,9 +1,9 @@
 {
   "name": "shs-chatbot",
   "version": "1.0.0",
-  "type": "module", 
+  "type": "module",
   "dependencies": {
-    "@google/generative-ai": "^0.x.x",
+    "@google/generative-ai": "^0.24.1",
     "cors": "^2.8.5",
     "dotenv": "^16.x.x",
     "express": "^4.x.x"
