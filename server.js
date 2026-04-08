@@ -20,7 +20,7 @@ app.use(express.static(path.join(__dirname, "public")));
 // 3. Pre-load Knowledge Base
 let knowledgeBaseText = "";
 try {
-    const kbPath = path.join(process.cwd(), "KnowledgeBase.json");
+    const kbPath = path.resolve(__dirname, "KnowledgeBase.json");
     if (fs.existsSync(kbPath)) {
         const rawData = fs.readFileSync(kbPath, "utf-8");
         const parsedData = JSON.parse(rawData);
