@@ -253,47 +253,59 @@ body {
     }
 }
 
+/* Final Mobile Responsive Fix */
 @media (max-width: 600px) {
-    /* 1. Make the container fill the screen but with a little breathing room */
+    /* Make container full-screen */
     .chat-container {
-        width: 100vw; 
-        height: 100vh;
-        margin: 0;
-        border-radius: 0; /* Remove rounded corners on mobile for a 'full-app' look */
+        width: 100vw !important;
+        height: 100vh !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+        display: flex;
+        flex-direction: column;
     }
 
-    /* 2. Fix the Header (The text getting cut off) */
+    /* Fix the Header text wrapping */
     .header {
         padding: 10px;
-        flex-direction: row;
-        justify-content: center;
+        display: flex;
+        align-items: center;
         gap: 10px;
     }
 
     .header h1 {
-        font-size: 1rem; /* Shrink the text so it fits one line */
-        text-align: center;
+        font-size: 0.95rem; /* Smaller font to fit long name */
+        line-height: 1.2;
+        text-align: left;
+        margin: 0;
+        white-space: normal; /* Allows the name to wrap to two lines */
     }
 
     .header img {
-        width: 35px; /* Shrink the SICM logo slightly */
+        width: 35px;
         height: auto;
     }
 
-    /* 3. Fix the Input Area (The bottom part) */
-    .input-area {
+    /* Adjust Chat Box height */
+    .chat-box {
+        flex: 1; /* Automatically takes up available space */
         padding: 10px;
+    }
+
+    /* Improve Input Area for thumbs */
+    .input-area {
+        padding: 12px;
+        gap: 8px;
         background: #fff;
-        border-top: 1px solid #ddd;
     }
 
     #userInput {
-        font-size: 16px; /* CRITICAL: Prevents iOS from auto-zooming when typing */
-        padding: 10px;
+        font-size: 16px; /* Prevents iPhone zoom-in glitch */
+        padding: 12px;
     }
 
     #sendBtn {
-        padding: 10px 15px;
-        font-size: 0.9rem;
+        padding: 12px;
+        font-weight: bold;
     }
 }
