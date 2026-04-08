@@ -43,10 +43,10 @@ app.post("/api/chat", async (req, res) => {
             throw new Error("GEMINI_API_KEY is missing from environment variables.");
         }
 
-        // Initialize GenAI with the 'v1' API version to avoid 404/beta issues
+// Inside app.post
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
         const model = genAI.getGenerativeModel({ 
-            model: "gemini-1.5-flash", 
+            model: "gemini-pro", // Changed from 1.5-flash to gemini-pro
         }, { apiVersion: 'v1' });
 
         // Build the system prompt dynamically
