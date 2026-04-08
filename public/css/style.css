@@ -206,3 +206,49 @@ body {
   background: rgba(75, 15, 26, 0.2);
   border-radius: 10px;
 }
+
+/* Mobile Styles (Screens smaller than 600px) */
+@media (max-width: 600px) {
+    .chat-container {
+        width: 95%; /* Take up most of the screen width */
+        height: 90vh; /* Use 90% of the screen height */
+        margin: 10px auto;
+        border-radius: 10px;
+    }
+
+    .header {
+        padding: 15px;
+        font-size: 1.1rem; /* Slightly smaller title */
+    }
+
+    .header img {
+        width: 40px; /* Smaller logo for mobile */
+    }
+
+    .chat-box {
+        padding: 10px;
+        height: calc(100% - 140px); /* Adjust height for the keyboard */
+    }
+
+    .input-area {
+        flex-direction: column; /* Stack input and button vertically */
+        padding: 10px;
+        gap: 8px;
+    }
+
+    #userInput {
+        width: 100%;
+        border-radius: 20px;
+        padding: 12px;
+    }
+
+    #sendBtn {
+        width: 100%; /* Full width button is easier to tap with thumbs */
+        border-radius: 20px;
+    }
+
+    .message {
+        max-width: 90%; /* Let chat bubbles take more space */
+        font-size: 0.95rem;
+    }
+}
